@@ -1,8 +1,9 @@
-
 #ifndef GAME_H
 #define GAME_H
 
 #include "tetromino.h"
+#include "console/console.h"
+using namespace console;
 
 #define BOARD_WIDTH 10
 #define BOARD_HEIGHT 20
@@ -14,24 +15,38 @@ class Game {
 private:
   // 게임 판을 나타내는 배열
   // board[x][y]가 true 인 경우 x, y 위치에 고정된 블록이 존재하는 것을 의미한다
+  // 실제로는 (1~BOARD_WIDTH-1, 1~BOARD_HEIGHT-1) 좌표 범위만 사용된다 (벽 제외)
   bool board_[BOARD_WIDTH][BOARD_HEIGHT];
-  // 현재 내려오는 테트로미노
+  // 현재 내려오는 테트로미노, 그리고 위치 (x, y)
   Tetromino current_ = Tetromino("", 0, "");
-  // 현재 내려오는 테트로미노의 위치
   int current_x; int current_y;
-  // 홀드한 테트로미노
-  Tetromino hold_ = Tetromino("", 0, "");
   // 다음에 내려올 테트로미노
   Tetromino next_ = Tetromino("", 0, "");
-  // 섀도우 테트로미노
+  // 홀드한 테트로미노
+  Tetromino hold_ = Tetromino("", 0, "");
+  // 섀도우 테트로미노, 그리고 위치 (x, y)
   Tetromino shadow_ = Tetromino("", 0, "");
+  int shadow_x; int shadow_y;
+  // 홀드 찬스를 썼는지 여부
+  bool holdChance;
 
   // 랜덤하게 테트로미노를 하나 뽑는다.
   Tetromino randomTetromino();
-  // 테트로미노를 배열에 추가한다.
-  void addTetromino(Tetromino t, int x, int y);
-  // 테트로미노를 배열에서 제거한다.
-  void removeTetromino(Tetromino t, int x, int y);
+  // 테트로미노가 해당 좌표로 움직일 수 있는지 확인한다.
+  // 다양한 함수에서 사용할 helper 함수임.
+  bool canMove(Tetromino t, int x, int y);
+  // 도착한 테트로미노를 보드에 고정시키는 함수
+  void addTetromino();
+  // 다 채워진 줄들을 지우고, 윗 줄을 당기는 함수
+  void clearLines();
+  // 홀드 기능을 구현하는 함수
+  void swapHold();
+  // 현재 테트로미노에 대한 섀도우를 만드는 함수
+  void makeShadow();
+  // 입력을 받는 함수
+  Key getInput();
+  // 입력을 적절하게 처리하는 함수
+  void processInput(Key input);
 
 
 public:

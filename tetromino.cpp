@@ -35,9 +35,13 @@ Tetromino Tetromino::rotatedCCW() {
     return rotated;
 }
 
-// 화면의 x, y 위치에 s 문자열로  테트로미노를 그린다
+// 화면의 x, y 위치에 s 문자열로 테트로미노를 그린다
 void Tetromino::drawAt(string s, int x, int y) {
-    draw(x, y, s);
+    int index = 0;
+    for(int row = 0; row < size_; row++)
+        for(int col = 0; col < size_; col++)
+            if(check(row, col))
+                draw(x + col, y + row, s);
 }
 
 // 테트로미노 선언
