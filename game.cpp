@@ -8,33 +8,34 @@
 using namespace console;
 
 void Game::update() {
-    clock_t start = clock();
+    static clock_t start = clock();  // static으로 선언하면 다음 함수 호출 시에도 값이 유지된다 !!
     clock_t end = clock();
-    Key input;
-    while((end - start) <= DROP_DELAY*1000/60) {
-        input = getInput();
-        processInput(input);
+    Key input = getInput();
+    processInput(input);
 
-        end = clock();
-    }
+    end = clock();
+
     // 더 이상 아래로 내려갈 수 없다면, 도착한 것으로 간주
     // 이동하던 테트로미노를 보드에 고정
     // 다 채운 줄은 지우고, 새로운 테트로미노 생성
-    if(!canMove(current_, current_x, current_y + 1)) {
-        addTetromino();
+    if(end - start > DROP_DELAY*1000/60) {  // 1초가 지났다면 테트로미노를 내려보내자.
+        if(!canMove(current_, current_x, current_y + 1)) {
+            addTetromino();
 
-        current_ = next_;
-        next_ = randomTetromino();
-        current_x = BOARD_WIDTH / 2 - current_.size() / 2;
-        current_y = 1;
-        makeShadow();
+            current_ = next_;
+            next_ = randomTetromino();
+            current_x = BOARD_WIDTH / 2 - current_.size() / 2;
+            current_y = 1;
+            makeShadow();
 
-        clearLines();
-        holdChance = true;
-    }
-    // 아래로 내려갈 수 있다면 내려감
-    else {
-        processInput(K_DOWN);
+            clearLines();
+            holdChance = true;
+        }
+        // 아래로 내려갈 수 있다면 내려감
+        else {
+            processInput(K_DOWN);
+        }
+        start = end;
     }
 }
 
@@ -170,6 +171,7 @@ Key Game::getInput() {
     if(key(K_SPACE)) return K_SPACE;
     if(key(K_Z)) return K_Z;
     if(key(K_X)) return K_X;
+    if(key(K_OTHER)) return K_OTHER;
     return K_NONE;
 }
 
@@ -177,6 +179,10 @@ void Game::processInput(Key input) {
     switch (input) {
         // 아무것도 인풋이 들어오지 않으면 아무것도 하지 않음
         case K_NONE:
+            break;
+        // 다른 키가 눌렸을 때 아무것도 하지 않음
+        // 이걸 처리해 주지 않으니까, 자꾸 다른 키를 눌렀을 때 프로그램이 죽어버림
+        case K_OTHER:
             break;
         // 왼쪽으로 이동이 가능하면 이동
         case K_LEFT:
