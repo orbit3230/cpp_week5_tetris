@@ -29,12 +29,18 @@ private:
   int shadow_x; int shadow_y;
   // 홀드 찬스를 썼는지 여부
   bool holdChance;
+  // 지워야 할 라인 개수
+  int linesToClear;
+  // 지운 라인 개수(점수)
+  int lines;
 
   // 랜덤하게 테트로미노를 하나 뽑는다.
   Tetromino randomTetromino();
   // 테트로미노가 해당 좌표로 움직일 수 있는지 확인한다.
   // 다양한 함수에서 사용할 helper 함수임.
   bool canMove(Tetromino t, int x, int y);
+  // 테트로미노가 도착한 후의 처리를 모아놓은 함수
+  void afterArrival();
   // 도착한 테트로미노를 보드에 고정시키는 함수
   void addTetromino();
   // 다 채워진 줄들을 지우고, 윗 줄을 당기는 함수

@@ -41,7 +41,7 @@ void Tetromino::drawAt(string s, int x, int y) {
     for(int row = 0; row < size_; row++)
         for(int col = 0; col < size_; col++)
             if(check(row, col))
-                draw(x + col, y + row, s);
+                draw(x + col + 1, y + row + 1, s);
 }
 
 // 테트로미노 선언
