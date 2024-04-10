@@ -8,19 +8,16 @@
 using namespace console;
 
 void Game::update() {
-    // 만약 게임이 흘러갈 수록 내려오는 속도를 빠르게 하고싶으면,  
-    // 이 변수의 값에 따라 DROP_DELAY를 상수가 아닌 변수로 하여 낮추면 될 거같음
-    static clock_t start = clock();  // static으로 선언하면 다음 함수 호출 시에도 값이 유지된다 !!
-    clock_t end = clock();
+    // 현재 플레이타임을 갱신
+    playTime = clock() - startTime;
+    
     Key input = getInput();
     processInput(input);
-
-    end = clock();
 
     // 더 이상 아래로 내려갈 수 없다면, 도착한 것으로 간주
     // 이동하던 테트로미노를 보드에 고정
     // 다 채운 줄은 지우고, 새로운 테트로미노 생성
-    if(end - start > DROP_DELAY*1000/60) {  // 1초가 지났다면 테트로미노를 내려보내자.
+    if(playTime - everySecond > DROP_DELAY*1000/60) {  // 1초가 지났다면 테트로미노를 내려보내자.
         // 더 이상 내려갈 수 없으면, 도착 후처리(고정, 완성라인 삭제, 새로 생성)
         if(!canMove(current_, current_x, current_y+1)) {
             afterArrival();
@@ -29,7 +26,7 @@ void Game::update() {
         else {
             processInput(K_DOWN);
         }
-        start = end;
+        everySecond = playTime;
     }
 }
 
@@ -50,13 +47,22 @@ void Game::draw() {
     next_.drawAt(BLOCK_STRING, BOARD_WIDTH+1+2+(3 - next_.size() / 2) - 1, (3 - next_.size() / 2) - 1);
     hold_.drawAt(BLOCK_STRING, BOARD_WIDTH+1+2+5+1+(3 - hold_.size() / 2) - 1, (3 - hold_.size() / 2) - 1);
     console::draw(0, BOARD_HEIGHT+2, std::to_string(linesToClear-lines) + " lines left");
+    sprintf(time, "%02d:%05.2f", playTime / 60000, ((double)(playTime%60000) / 1000));  // mm:ss.ms
+    console::draw(2, BOARD_HEIGHT+3, time);
+
+    shouldExit();
 }
 
 bool Game::shouldExit() {
-    if(lines >= linesToClear)
+    if(lines >= linesToClear) {
+        console::draw(3, BOARD_HEIGHT/2, "You Win");
+        console::draw(2, BOARD_HEIGHT/2+1, time);
         return true;
-    if(current_y == 1 && !canMove(current_, current_x, current_y + 1))
+    }
+    if(current_y == 0 && !canMove(current_, current_x, current_y)) {
+        console::draw(2, BOARD_HEIGHT/2, "You Lost");
         return true;
+    }
     return false;
 }
 
@@ -97,7 +103,7 @@ void Game::afterArrival() {
     current_ = next_;
     next_ = randomTetromino();
     current_x = BOARD_WIDTH / 2 - current_.size() / 2;
-    current_y = 1;
+    current_y = 0;
     makeShadow();
 
     clearLines();
@@ -262,9 +268,12 @@ Game::Game() {
 
     // 첫 테트로미노 생성
     current_x = BOARD_WIDTH / 2 - current_.size() / 2;
-    current_y = 1;
+    current_y = 0;
     
     makeShadow();
 
     holdChance = true;
+    startTime = clock();
+    playTime = clock() - startTime;
+    everySecond = playTime;
 }

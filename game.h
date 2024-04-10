@@ -3,6 +3,7 @@
 
 #include "tetromino.h"
 #include "console/console.h"
+#include <ctime>
 using namespace console;
 
 #define BOARD_WIDTH 10
@@ -33,6 +34,11 @@ private:
   int linesToClear;
   // 지운 라인 개수(점수)
   int lines;
+  // 시간 관련 변수들
+  clock_t startTime;    // 게임 시작 시간
+  clock_t playTime;     // 현재 플레이타임
+  clock_t everySecond;  // 매 초를 체크
+  char time[8];         // 문자열로 변환한 현재 플레이타임 (mm:ss.ms)
 
   // 랜덤하게 테트로미노를 하나 뽑는다.
   Tetromino randomTetromino();
