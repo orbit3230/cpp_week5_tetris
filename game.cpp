@@ -45,7 +45,8 @@ void Game::draw() {
                 console::draw(x+1, y+1, BLOCK_STRING);
 
     next_.drawAt(BLOCK_STRING, BOARD_WIDTH+1+2+(3 - next_.size() / 2) - 1, (3 - next_.size() / 2) - 1);
-    hold_.drawAt(BLOCK_STRING, BOARD_WIDTH+1+2+5+1+(3 - hold_.size() / 2) - 1, (3 - hold_.size() / 2) - 1);
+    if(hold_ != nullptr)
+        hold_->drawAt(BLOCK_STRING, BOARD_WIDTH+1+2+5+1+(3 - hold_->size() / 2) - 1, (3 - hold_->size() / 2) - 1);
     console::draw(0, BOARD_HEIGHT+2, std::to_string(linesToClear-lines) + " lines left");
     sprintf(time, "%02d:%05.2f", playTime / 60000, ((double)(playTime%60000) / 1000));  // mm:ss.ms
     console::draw(2, BOARD_HEIGHT+3, time);
@@ -147,18 +148,20 @@ void Game::clearLines() {
 }
 
 void Game::swapHold() {
-    Tetromino temp = hold_;
-    hold_ = current_;
+    Tetromino* temp = hold_;
+    hold_ = current_.original();
     // hold 되어 있던 테트로미노가 없다면(처음 홀드하는 경우)
     // 홀드에 집어넣고, 다음 테트로미노를 꺼내며 새로 진행
-    if(temp.name() == "") {
+    if(temp == nullptr) {
         current_ = next_;
         next_ = randomTetromino();
         current_x = BOARD_WIDTH / 2 - current_.size() / 2;
-        current_y = 1;
+        current_y = 0;
     }
     else {
-        current_ = temp;
+        current_ = *temp;
+        current_x = BOARD_WIDTH / 2 - current_.size() / 2;
+        current_y = 0;
     }
 
     // 해당 블럭에 홀드를 사용했으므로 찬스 소모

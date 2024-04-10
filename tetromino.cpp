@@ -22,6 +22,7 @@ Tetromino Tetromino::rotatedCW() {
         for(int row = size_-1; row >= 0 ; row--)
             newShape += shape_[row][col] ? 'O' : 'X';
     Tetromino rotated(name_, size_, newShape);
+    rotated.original_ = original_;  // 회전 하더라도 원래의 테트로미노를 기억
     return rotated;
 }
 
@@ -32,6 +33,7 @@ Tetromino Tetromino::rotatedCCW() {
         for(int row = 0; row < size_; row++)
             newShape += shape_[row][col] ? 'O' : 'X';
     Tetromino rotated(name_, size_, newShape);
+    rotated.original_ = original_;  // 회전 하더라도 원래의 테트로미노를 기억
     return rotated;
 }
 

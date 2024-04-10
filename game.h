@@ -24,7 +24,7 @@ private:
   // 다음에 내려올 테트로미노
   Tetromino next_ = Tetromino("", 0, "");
   // 홀드한 테트로미노
-  Tetromino hold_ = Tetromino("", 0, "");
+  Tetromino* hold_ = nullptr;
   // 섀도우 테트로미노, 그리고 위치 (x, y)
   Tetromino shadow_ = Tetromino("", 0, "");
   int shadow_x; int shadow_y;
