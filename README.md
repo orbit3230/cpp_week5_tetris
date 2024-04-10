@@ -5,3 +5,13 @@ git clone https://github.com/orbit3230/cpp_week5_tetris tetris
 cd tetris  
 mingw32-make  
 ./main.exe
+
+- 조작키
+  - `위 방향키(UP_ARROW)` : 하드 드롭
+  - `아래 방향키(DOWN_ARROW)` : 소프트 드롭
+  - `오른쪽 방향키(RIGHT_ARRAY)` : 오른쪽 이동
+  - `왼쪽 방향키(LEFT_ARRAY)` : 왼쪽 이동
+  - `X` : 시계방향 회전
+  - `Z` : 반시계방향 회전
+  - `SPACE` : 홀드 (블럭 당 1회만 가능)
+  - `ESC` : 게임 종료
