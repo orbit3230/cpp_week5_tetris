@@ -37,8 +37,9 @@ private:
   // 시간 관련 변수들
   clock_t startTime;    // 게임 시작 시간
   clock_t playTime;     // 현재 플레이타임
-  clock_t everySecond;  // 매 초를 체크
   char time[8];         // 문자열로 변환한 현재 플레이타임 (mm:ss.ms)
+  // 프레임 카운터
+  static int frameCount;
 
   // 랜덤하게 테트로미노를 하나 뽑는다.
   Tetromino randomTetromino();

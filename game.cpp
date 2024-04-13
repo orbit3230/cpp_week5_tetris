@@ -10,6 +10,10 @@ using namespace console;
 void Game::update() {
     // 현재 플레이타임을 갱신
     playTime = clock() - startTime;
+    // 프레임 카운트
+    // 처음에는 시간을 기준으로 1초가 지나면 내려보내도록 로직을 짰는데,  
+    // 오차가 심해서 프레임 카운트로 처리 <- 애초에 이렇게 짜도록 하는 것이 과제의 목적이었던 것으로 추정
+    Game::frameCount++;
     
     Key input = getInput();
     processInput(input);
@@ -17,7 +21,7 @@ void Game::update() {
     // 더 이상 아래로 내려갈 수 없다면, 도착한 것으로 간주
     // 이동하던 테트로미노를 보드에 고정
     // 다 채운 줄은 지우고, 새로운 테트로미노 생성
-    if(playTime - everySecond > DROP_DELAY*1000/60) {  // 1초가 지났다면 테트로미노를 내려보내자.
+    if(Game::frameCount >= DROP_DELAY) {  // 60프레임이 지났다면 테트로미노를 내려보내자.
         // 더 이상 내려갈 수 없으면, 도착 후처리(고정, 완성라인 삭제, 새로 생성)
         if(!canMove(current_, current_x, current_y+1)) {
             afterArrival();
@@ -26,7 +30,7 @@ void Game::update() {
         else {
             processInput(K_DOWN);
         }
-        everySecond = playTime;
+        Game::frameCount = 0;
     }
 }
 
@@ -278,5 +282,6 @@ Game::Game() {
     holdChance = true;
     startTime = clock();
     playTime = clock() - startTime;
-    everySecond = playTime;
 }
+// static 변수 프레임 카운터 초기화
+int Game::frameCount = 0;
